@@ -322,7 +322,60 @@ app.get("/api/customer/:id",async(req,res)=>{
         res.status(401).json("Server Error");
     }
 });
+//(post) add new customer
+app.post("/api/customer",async(req,res)=>{
+    const customer = new customerModel({
+        id: app.length+1,
+        name: req.body.name,
+        phone: req.body.phone,
+        email: req.body.email,
+    });
+    try{
+        const customeradd = await customer.save();
+        res.status(201);
+        res.json(customeradd);
+    } catch(err){
+        res.status(401);
+        res.json(err.message);
+    }
+});
+//update
+app.put("/api/customer/:id",async(req,res)=>{
+    try{
+        const customeredit = await customerModel.findOneAndUpdate(
+            { id : req.params.id},
+            req.body,
+            {new: true}
+        );
+        if(!customeredit){
+            res.status(400);
+            res.json("customer not found");
+        }else{
+            res.status(200);
+            res.json(customeredit);
+    }
+}catch(err){
+    res.status(500);
+    res.json(err.message);
+    }
+});
 
+
+//Delete
+app.delete("/api/customer/:id",async(req,res)=>{
+    try{
+    const rmCustomer = await customerModel.findOneAndDelete(
+            { id: req.params.id},
+        )
+        if(!rmCustomer){
+            res.status(404).json("Customer not found!");
+        } else{
+            res.status(200).json("Feedback has Deleted");
+        } } catch(err){
+            console.log("Error while deleting this customer",error);
+            res.status(500).json("Error in the server");
+        }
+});
 //Run Server
 const port = 3000;
 app.listen(port,()=>{
