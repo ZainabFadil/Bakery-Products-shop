@@ -1,0 +1,24 @@
+{
+  "name": "bakery-products-shop",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZainabFadil/Bakery-Products-shop.git"
+  },
+  "author": "Zainab-Ranim-Adel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ZainabFadil/Bakery-Products-shop/issues"
+  },
+  "homepage": "https://github.com/ZainabFadil/Bakery-Products-shop#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^8.0.3"
+  }
+}
