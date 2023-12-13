@@ -120,7 +120,43 @@ app.post('/staff', async (req, res) => {
     }
 });
 
+//update(PUT) verb
+app.put('/api/staff/:id', async (req, res) => {
+    try 
+    {
+        const worker = await StaffModel.findOneAndUpdate(
+            { id: req.params.id },
+            req.body,
+            { new: true }
+        );
+        if (!worker) {
+            res.status(404).json("worker with that ID not found");
+        } else {
+            res.json(worker);
+        }
+    } catch (error)
+    {
+        console.error('Error updating that worker:', error);
+        res.status(500).json('Error In The Server!');
+    }
+});
 
+//Delete Method
+app.delete('/api/staff/:id', async (req, res) => {
+    try {
+        const worker = await StaffModel.findOneAndDelete({
+             id: req.params.id
+        });
+        if (!worker) {
+            res.status(404).json('That worker not found!');
+        } else {
+            res.json('Worker Deleted!');
+        }
+    } catch (error) {
+        console.error('Error in deleting that worker:', error);
+        res.status(500).json('Server Error!');
+    }
+});
 
 
 
