@@ -276,8 +276,52 @@ app.delete('/api/product/:id', async (req, res) => {
     }
 });
 
+////////////////////////////////////////////////////////////////////////
+//customer Schema 
+const customerSchema = new mongoose.Schema({
+    id :{
+        type :Number,
+        required : true,
+    } ,
+    name :{
+        type : String,
+        required : true
+    } ,
+    phone : {
+        type : String,
+        required : true,
+    },
+    email : {
+        type : String,
+        required : true,
+    },
+});
+let customerModel = new mongoose.model("customer", customerSchema);
+//GET all Customers
+app.get('/api/customer', async (req, res) => { 
+    try { 
+        const customer = await customerModel.find(); 
+        res.json(customer); 
+    } catch (err) { 
+    res.status(500).json('that customer not found!'); 
+    } 
+}); 
 
-
+//get specific product
+app.get("/api/customer/:id",async(req,res)=>{
+    try{
+        const customer = await customerModel.findOne({ 
+            id : req.params.id
+        });
+        if(!customer){
+            res.status(400).json("customer not found");
+        } else{
+            res.json(customer);
+        }
+    }catch(error){
+        res.status(401).json("Server Error");
+    }
+});
 
 //Run Server
 const port = 3000;
