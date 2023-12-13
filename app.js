@@ -158,7 +158,123 @@ app.delete('/api/staff/:id', async (req, res) => {
     }
 });
 
+/////////////////////////////////////////////////////////////////////////
+//Product SChema
+//product class blueprint
+const ProductSchema = new mongoose.Schema({
+    id :{
+        type :Number,
+        required : true,
+    } ,
+    name :{
+        type : String,
+        required : true
+    } ,
+    productType : {
+        type : String,
+        enum : ['sugary', 'salty'],
+    },
+    price :{
+        type : Number,
+        required : true
+    } ,
+    discount : Number ,
+});
+let ProductModel = new mongoose.model("Product", ProductSchema);
 
+//objects
+let product1 = new ProductModel({
+    id: 1,
+    name: 'Donut',
+    productType: 'sugary',
+    price: 50,
+    discount : 0.2,
+}).save();
+let product2 = new ProductModel({
+    id: 2,
+    name: 'pizza',
+    productType: 'salty',
+    price: 200,
+    discount : 0.1,
+}).save();
+
+//GET all Products
+app.get('/api/Product', async (req, res) => { 
+    try { 
+        const Product = await ProductModel.find(); 
+        res.json(Product); 
+    } catch (err) { 
+    res.status(500).json('product not found!'); 
+    } 
+}); 
+
+//get specific product
+app.get("/api/Product/:id",async(req,res)=>{
+    try{
+        const product = await ProductModel.findOne({ 
+            id : req.params.id
+        });
+        if(!product){
+            res.status(400).json("product not found");
+        } else{
+            res.json(product);
+        }
+    }catch(error){
+        res.status(401).json("Server Error");
+    }
+});
+//add product
+app.post('/Product', async (req, res) => { 
+    const product = new ProductModel({
+        id: app.length+1,
+        name: req.body.name,
+        productType: req.body.typeOfProduct,
+        price: req.body.price,
+        discount: req.body.discount,
+    });
+    try{
+        const productadd = await product.save();
+        res.status(201);
+        res.json(productadd);
+    } catch(err){
+        res.status(400);
+        res.json(err.message);
+    }
+});
+//update method
+app.put('/api/product/:id', async (req, res) => {
+    try {
+        const ProductUpdate = await ProductModel.findOneAndUpdate(
+        { id: req.params.id },
+        req.body,
+        { new: true }
+    );
+    if (!ProductUpdate) {
+        res.status(404).json('That product not found!');
+    } else {
+        res.json(ProductUpdate);
+    }
+    } catch (error) {
+        console.error('Error updating product:', error);
+        res.status(500).json('Error in the server');
+    }
+});
+//delete product
+app.delete('/api/product/:id', async (req, res) => {
+    try {
+        const rmProduct = await ProductModel.findOneAndDelete({ 
+            id: req.params.id 
+        });
+    if (!rmProduct) {
+        res.status(404).json('Product not found');
+    } else {
+        res.json('Product deleted successfully');
+    }
+    } catch (error) {
+        console.error('Error while deleting that product:', error);
+        res.status(500).json('Error in the Server!');
+    }
+});
 
 
 
@@ -168,3 +284,4 @@ const port = 3000;
 app.listen(port,()=>{
     console.log(`Server is Running on Port ${port}`);
 });
+
