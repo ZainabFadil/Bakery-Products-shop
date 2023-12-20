@@ -1,13 +1,12 @@
 const express = require ("express");
 const mongoose = require("mongoose"); 
 const app = express();
-
 //apply Middlewares  
 app.use(express.json());
 
 //connection
 async function connect(){
-    let connection =  await mongoose.connect('mongodb://localhost:27017');
+    let connection =  await mongoose.connect('mongodb://localhost:27017/bakery');
     if (!connection) {
     console.log('no connect');
     } else {
@@ -101,7 +100,7 @@ app.get("/api/staff/:id",async(req,res)=>{
 });
 //post verb
 app.post('/staff', async (req, res) => { 
-    const staff = new StaffModelModel({
+    const staff = new StaffModel({
         //////question********************
         id: app.length+1,
         name: req.body.name,
@@ -207,6 +206,12 @@ app.get('/api/Product', async (req, res) => {
     res.status(500).json('product not found!'); 
     } 
 }); 
+/*app.get('/asyncHandler',async (req, res) => {
+    let product = await ProductModel.find();
+    res.status(200).json(product);
+}
+); */
+
 
 //get specific product
 app.get("/api/Product/:id",async(req,res)=>{
@@ -298,14 +303,43 @@ const customerSchema = new mongoose.Schema({
 });
 let customerModel = new mongoose.model("customer", customerSchema);
 //GET all Customers
-app.get('/api/customer', async (req, res) => { 
+/*app.get('/api/customer', async (req, res) => { 
     try { 
         const customer = await customerModel.find(); 
         res.json(customer); 
     } catch (err) { 
     res.status(500).json('that customer not found!'); 
     } 
-}); 
+}); */
+let customer1 = new customerModel({
+    id: 1,
+    name: 'ahmed mostafa',
+    phone: '0101946156',
+    email: "a.mostafa@gmail.com",
+}).save();
+let customer2 = new customerModel({
+    id: 2,
+    name: 'ali abnaser',
+    phone: '0101946586',
+    email: "a.abnaser@gmail.com",
+}).save();
+/*try { 
+    const Product = await ProductModel.find(); 
+    res.json(Product); 
+} catch (err) { 
+    console.error(error);
+res.status(500).json('product not found!'); 
+} 
+}); */
+app.get('/api/customer', async (req, res) => {
+       try {
+           const customer = await customerModel.find();
+           res.json(customer);
+       } catch (error) {
+        
+           res.status(500).send('that customer not found!');
+       }
+   });
 
 //get specific product
 app.get("/api/customer/:id",async(req,res)=>{
